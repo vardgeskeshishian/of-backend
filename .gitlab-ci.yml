@@ -1,0 +1,18 @@
+stages:
+  - deploy
+
+staging_deploy:
+  tags: 
+      - DS-Vps
+  stage: deploy
+  script:
+    - sudo -u www-data cp -r * /var/www/html/of-backend
+    - cd /var/www/html/of-backend
+    - composer install
+    - npm install && npm run build
+    - php artisan migrate && php artisan storage:link && php artisan optimize:clear
+  environment:
+    name: staging
+    url: https://of-vm6.one-pix.dev/
+  only:
+    - dev
